@@ -6,7 +6,7 @@ using LaTeXStrings, CairoMakie
 # Define the dynamics
 function iip_FP!(f, p, y, t)
         f[1] = p[2] 
-        f[2] = ()*p[1] + 2*(y[1]/(σ^2)*t^2) - 4/(σ^2)*t + 1/t^2)*p[2]
+        f[2] = (*p[1] + 2*(y[1]/(σ^2)*t^2) - 4/(σ^2)*t + 1/t^2)*p[2]
         return nothing
 end
 
