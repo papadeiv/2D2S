@@ -1,3 +1,6 @@
-*.ipynb
-*.sh
-Pagnani/
+# Ignore everything...
+*
+#...except for the folder simulation
+!normal_forms
+#...and the gitignore file
+!.gitignore

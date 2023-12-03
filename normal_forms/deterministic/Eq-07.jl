@@ -1,6 +1,7 @@
 using DynamicalSystems
 using LaTeXStrings, CairoMakie
 
+
 # Define the dynamics
 function iip_bfold!(f, x, y, t)
         f[1] = -x[2]-(x[1])^2
@@ -16,18 +17,11 @@ T = 37.75
 # Build the (non-parametric) dynamical system
 bfold = ContinuousDynamicalSystem(iip_bfold!, x0, nothing)
 
-# Specify solver from DifferentialEquations.jl
-# diffeq = (alg=Tsit5(), reltol=1e-3, dtmax=1e-2)
-
 # Evolve the dynamical system using the specified solver
 Xt, t = trajectory(bfold, T; Δt=δt)#; diffeq...)
 
 # Print the Dataset for the time evolution
 printstyled("\n", Xt, "\n"; bold=true, underline=true, color=:light_green)
-#=
-for j in 1:size(Xt[:],1) println(Xt[j])
-end
-=#
 
 # Plot flow in state space
 CairoMakie.activate!()
@@ -47,7 +41,6 @@ lines!(ax, y_critical, x_repl_critical, color = :black, linewidth = 1, linestyle
 save("B-fold.png", fig1)
 
 # Create animation
-#=
 points = Observable(Point2f[(x0[2],x0[1])])
 fig = Figure()
 ax = Axis(fig[1,1],
@@ -73,4 +66,3 @@ record(fig, "Example 2.3.gif", frames;
        new_point = Point2f(Xt[frame,2],Xt[frame,1])
        points[] = push!(points[], new_point)
 end
-=#
