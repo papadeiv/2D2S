@@ -2,10 +2,8 @@ using DifferentialEquations
 using LaTeXStrings, CairoMakie
 using Statistics
 
-
 #     Ornstein-Uhlenbeck process
 # (linear drift, constant diffusion)
-
 
 # Define the parameters of the process
 σ = 0.1 
@@ -13,6 +11,9 @@ using Statistics
 α = 1.0
 trueVar = 0.005
 ∂N = 0.35
+x0 = [0.0, -2.0]
+T = 2.00
+δt = 1e-2
 
 # Define the deterministic dynamics
 function iip_det!(f, x, y, t)
@@ -27,23 +28,11 @@ function iip_stoc!(f, x, y, t)
         return nothing
 end
 
-# Define the evolution parameters 
-x0 = [0.0, -2.0]
-T = 2.00
-δt = 1e-2
-
 # Build the (non-parametric) dynamical system
 OUP = SDEProblem(iip_det!, iip_stoc!, x0, (0.0, T))
 
 # Evolve a sample path of the stochastic process 
 Xt = solve(OUP, EM(), dt=δt)
-
-# Print the sample path 
-#=
-for n in 1:size(Xt,2)
-        printstyled("Solution x=", Xt[n], " at time t=", Xt.t[n], "\n"; bold=true, underline=true, color=:light_green)
-end
-=#
 
 # Plot the sample path 
 CairoMakie.activate!()
@@ -84,11 +73,9 @@ Var = zeros(Float64, size(Xt,2))
 for n in 1:size(Xt,2)
         Var[n] = var(Xt[1,1:n]; mean = E[1])
 end
-#println(last(Var))
 # Theoretical values [Kuehn, 2011]
 E_exact = x0[1].*exp.((-α.*time)./ε)
 Var_exact = (x0[1] - (σ^2)/(2*α)).*exp.((-2*α.*time)./ε) .+ (σ^2)/(2*α)
-#println(last(Var_exact))
 limits!(ax3,0,T,0,0.01)
 l1 = lines!(ax3, time, Var, color = :red)
 l2 = lines!(ax3, time, Var_exact, color = :blue, linestyle = :dash)
