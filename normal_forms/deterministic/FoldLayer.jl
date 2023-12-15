@@ -1,10 +1,12 @@
 using DynamicalSystems
 using LaTeXStrings, CairoMakie
 
+# LAYER EQUATION
+
 # Define the dynamics
-function iip_tc!(f, x, y, t)
-        f[1] = x[2]*x[1]-(x[1])^2
-        f[2] = 0.0
+function iip_bfold!(f, x, y, t)
+        f[1] = -x[2]-(x[1])^2
+        f[2] = 0.0 
         return nothing
 end
 
@@ -16,7 +18,7 @@ x3 = [1.125, -0.625]
 x4 = [0.25, -0.50]
 x5 = [1.00, -0.375]
 T = 10.0
-δt = 1e-2
+δt = 1e-1
 
 # Evolve the dynamical system from different initial conditions 
 bfold = ContinuousDynamicalSystem(iip_bfold!, x0, nothing)
@@ -45,12 +47,13 @@ X5 = Xt[:,1]
 Y5 = Xt[:,2]
 # Simulation parameters
 Nt = size(X0,1)
-y_values = LinRange(-1.125,0.00,Nt)
+y_values = LinRange(-1.125,0.00,200)
 
 # Plot fast flow in state space
 CairoMakie.activate!()
-fig1 = Figure(; size = (600, 400))
+fig1 = Figure(; size = (600, 400), backgroundcolor = :transparent)
 ax = Axis(fig1[1, 1],
+    backgroundcolor = :transparent,
     xlabel = L"y",
     ylabel = L"x",
     limits = ((y_values[1],y_values[end]+0.05), (-1.25,+1.25))
@@ -83,7 +86,52 @@ scatter!(ax, Y4[end], X4[end], color = :red, strokecolor = :black, strokewidth =
 scatter!(ax, Y5[end], X5[end], color = :red, strokecolor = :black, strokewidth = 1.5, markersize = 9)
 
 # Export the results
-save("../results/F-bifurcation.png", fig1)
+#save("../results/F-bifurcation.png", fig1)
+
+# FAST-SLOW SYSTEM
+
+# Define the dynamics
+function iip_fs!(f, x, y, t)
+        f[1] = -x[2]-(x[1])^2
+        f[2] = 0.01 
+        return nothing
+end
+
+# Define the initial state and final time
+x0 = [1.00,-1.00]
+T = 70.0
+δt = 1e0
+
+# Evolve the dynamical system from different initial conditions 
+bfold = ContinuousDynamicalSystem(iip_fs!, x0, nothing)
+Xt, t = trajectory(bfold, T; Δt=δt)
+X = Xt[:,1]
+Y = Xt[:,2]
+
+# Plot fast flow in state space
+CairoMakie.activate!()
+fig2 = Figure(; size = (600, 400), backgroundcolor = :transparent)
+ax1 = Axis(fig2[1, 1],
+    backgroundcolor = :transparent,
+    xlabel = L"y",
+    ylabel = L"x",
+    limits = ((y_values[1],y_values[end]+0.05), (-1.25,+1.25))
+)
+# Plot the (deterministic) critical manifold
+stable = sqrt.(-y_values)
+unstable = -sqrt.(-y_values)
+lines!(ax1, y_values, stable, color = :black, linewidth = 1.5)
+lines!(ax1, y_values, unstable, color = :black, linewidth = 1.5, linestyle = :dash)
+# Plot the flow in state space
+scatter!(ax1, Y, X, color = :red, strokecolor = :black, strokewidth = 1.5, markersize = 9)
+scatter!(ax1, Y0, X0, color = :blue, strokecolor = :black, strokewidth = 1.5, markersize = 9)
+# Plot the end states of each trajectory
+scatter!(ax1, Y0[1], X0[1], color = :purple, strokecolor = :black, strokewidth = 1.5, markersize = 9)
+scatter!(ax1, Y[1], X[1], color = :yellow, strokecolor = :black, strokewidth = 1.5, markersize = 9)
+scatter!(ax1, Y[end], X[end], color = :green, strokecolor = :black, strokewidth = 1.5, markersize = 9)
+
+# Export the results
+save("../results/F-bifurcation.png", fig2)
 
 # Create animation
 #=
