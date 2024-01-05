@@ -82,12 +82,14 @@ println("Simulating the ensemble sample paths")
         end
 end
 # Plot the ensemble's sample paths
-fig1 = Figure(resolution = (1200, 400))
+fig1 = Figure(; size = (1200, 400), backgroundcolor = :transparent,)
 ax1 = Axis(fig1[1,1:2],
+    backgroundcolor = :transparent,
     ylabel = L"x",
     limits = ((x0[2],y_values[end]), (-1,+0.5))
 )
 ax2 = Axis(fig1[2,1:2],
+    backgroundcolor = :transparent,
     ylabel = L"x",
     limits = ((x0[2],y_values[end]), (-1,+0.5))
 )
@@ -109,6 +111,7 @@ lines!(ax2, y_neg, stable_neg, color = :black, linewidth = 1.5)
 lines!(ax2, y_neg, unstable_neg, color = :black, linewidth = 1.5, linestyle = :dash)
 # Plot percentage of escaped trajectories at different y values
 ax3 = Axis(fig1[1:2,3],
+         backgroundcolor = :transparent,
          xlabel = L"y",
          ylabel = "Escaped traj.",
          limits = ((-1,0), nothing)
@@ -180,17 +183,18 @@ println("Computing the variance of the (unescaped) ensemble paths")
         push!(V, VAR)
 end
 lines!(ax1, yt[end], M, color = :blue, linewidth = 1.5)
-fig2 = Figure(resolution = (1200, 1200))
+fig2 = Figure(; size = (1200, 1200), backgroundcolor = :transparent)
 ax4 = Axis(fig2[1,1],
+    backgroundcolor = :transparent,
     xlabel = L"y",
     ylabel = "Variance",
     limits = ((-1,0), nothing)
 )
-lines!(ax4, yt[end], V, color = :black, linewidth = 1.5)
+lines!(ax4, yt[end], V, color = :black, linewidth = 3.5)
 # Plot the theoretical variance of the steady-state Fokker-Planck distribution of the normal form
 theoretical_y = LinRange(x0[2],0,200)
 theoretical_V = [0.00510694,0.00513435,0.00516208,0.00519013,0.00521851,0.00524723,0.00527628,0.00530569,0.00533545,0.00536557,0.00539607,0.00542694,0.00545819,0.00548984,0.0055219,0.00555436,0.00558724,0.00562055,0.0056543,0.00568849,0.00572315,0.00575827,0.00579387,0.00582996,0.00586655,0.00590365,0.00594128,0.00597945,0.00601817,0.00605746,0.00609733,0.0061378,0.00617887,0.00622058,0.00626293,0.00630594,0.00634963,0.00639403,0.00643915,0.00648501,0.00653163,0.00657904,0.00662727,0.00667634,0.00672627,0.0067771,0.00682886,0.00688158,0.00693529,0.00699003,0.00704584,0.00710277,0.00716085,0.00722013,0.00728067,0.00734252,0.00740573,0.00747036,0.0075365,0.00760419,0.00767353,0.00774459,0.00781746,0.00789222,0.00796899,0.00804786,0.00812895,0.00821238,0.00829827,0.00838676,0.00847797,0.00857207,0.0086692,0.00876952,0.0088732,0.00898039,0.00909127,0.00920601,0.00932478,0.00944775,0.00957509,0.00970694,0.00984347,0.00998481,0.0101311,0.0102824,0.0104388,0.0106004,0.0107672,0.0109392,0.0111163,0.0112985,0.0114857,0.0116776,0.011874,0.0120747,0.0122793,0.0124875,0.0126988,0.0129127,0.0131286,0.0133459,0.0135641,0.0137823,0.0139999,0.0142161,0.01443,0.0146409,0.0148479,0.0150501,0.0152467,0.0154369,0.0156198,0.0157946,0.0159607,0.0161172,0.0162635,0.0163989,0.0165231,0.0166353,0.0167353,0.0168227,0.0168972,0.0169586,0.0170069,0.0170419,0.0170637,0.0170725,0.0170682,0.0170513,0.0170219,0.0169804,0.0169273,0.0168628,0.0167875,0.0167018,0.0166063,0.0165015,0.016388,0.0162662,0.0161368,0.0160004,0.0158575,0.0157086,0.0155543,0.0153951,0.0152316,0.0150642,0.0148935,0.0147199,0.0145438,0.0143656,0.0141859,0.0140049,0.0138229,0.0136405,0.0134577,0.013275,0.0130926,0.0129108,0.0127298,0.0125497,0.0123709,0.0121934,0.0120174,0.0118431,0.0116706,0.0115,0.0113314,0.0111649,0.0110005,0.0108384,0.0106786,0.0105211,0.010366,0.0102133,0.0100631,0.00991527,0.00976991,0.00962701,0.00948657,0.00934858,0.00921303,0.00907991,0.0089492,0.00882089,0.00869495,0.00857135,0.00845007,0.00833108,0.00821435,0.00809985,0.00798754,0.0078774,0.00776938,0.00766344,0.00755957,0.00745771,0.00735783,0.0072599]
-lines!(ax4, theoretical_y, theoretical_V, color = :green, linewidth = 3.5)
+lines!(ax4, theoretical_y, theoretical_V, color = :green, linewidth = 5)
 # Export figures
-save("../results/StocTransBifDistributions.png", fig1)
-save("../results/StocTransBifVariance.png", fig2)
+save("../results/AddTransEnsemble.png", fig1)
+save("../results/AddTransVariance.png", fig2)
